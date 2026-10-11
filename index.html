@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stepped-Care: Solusi Trauma Perantau Pascabencana Sumatra</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+        }
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 4s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-50 glass-card shadow-sm border-b border-slate-200/60 dark:border-slate-800/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('home')">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+                    <i data-lucide="heart-pulse" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight bg-gradient-to-r from-brand-700 to-emerald-500 bg-clip-text text-transparent">Stepped-Care Sumatra</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Pemulihan Trauma Pascabencana</p>
+                </div>
+            </div>
+
+            <!-- Desktop Nav Menu -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                <button onclick="switchTab('home')" id="nav-home" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-brand-600 bg-brand-50 dark:bg-brand-950/50 dark:text-brand-400">Beranda</button>
+                <button onclick="switchTab('assessment')" id="nav-assessment" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900">Asesmen & Triaging</button>
+                <button onclick="switchTab('ringan')" id="nav-ringan" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900">Level 1: Mindful Escapism</button>
+                <button onclick="switchTab('menengah')" id="nav-menengah" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900">Level 2: Social Venting</button>
+                <button onclick="switchTab('parah')" id="nav-parah" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900">Level 3: E-Psychiatry</button>
+                <button onclick="switchTab('stories')" id="nav-stories" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900">Kisah & Dokumentasi</button>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:ring-2 hover:ring-brand-500 transition-all" title="Ganti Tema">
+                    <i data-lucide="moon" id="theme-icon" class="w-5 h-5"></i>
+                </button>
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-1 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800">
+            <button onclick="switchTab('home'); toggleMobileMenu();" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-brand-950">Beranda</button>
+            <button onclick="switchTab('assessment'); toggleMobileMenu();" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-brand-950">Asesmen & Triaging</button>
+            <button onclick="switchTab('ringan'); toggleMobileMenu();" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-brand-950">Level 1: Mindful Escapism</button>
+            <button onclick="switchTab('menengah'); toggleMobileMenu();" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-brand-950">Level 2: Social Venting</button>
+            <button onclick="switchTab('parah'); toggleMobileMenu();" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-brand-950">Level 3: E-Psychiatry</button>
+            <button onclick="switchTab('stories'); toggleMobileMenu();" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-brand-950">Kisah & Dokumentasi</button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- TAB 1: HOME / LANDING PAGE -->
+        <section id="tab-home" class="tab-content space-y-12">
+            <!-- Hero Section -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-900 via-emerald-900 to-slate-900 text-white p-8 sm:p-12 lg:p-16 shadow-2xl">
+                <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#22c55e_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="relative z-10 max-w-3xl space-y-6">
+                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-brand-500/20 border border-brand-400/30 text-brand-300 text-xs font-semibold uppercase tracking-wider">
+                        <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                        <span>Respons Krisis Pascabencana Sumatra 2025/2026</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+                        Pemulihan Mental Bertahap untuk <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Mahasiswa Perantau</span>
+                    </h1>
+                    <p class="text-base sm:text-lg text-slate-300 leading-relaxed">
+                        Banjir dan longsor di Aceh, Sumatera Utara, dan Sumatera Barat tidak hanya merusak infrastruktur, tetapi juga menyisakan kecemasan mendalam bagi 16.234 mahasiswa perantau yang cemas akan keselamatan keluarga dan masa depan studinya. Anda tidak sendirian.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <button onclick="switchTab('assessment')" class="px-6 py-3.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold shadow-lg shadow-brand-500/30 transition-all flex items-center space-x-2">
+                            <span>Mulai Asesmen Mandiri</span>
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                        <button onclick="switchTab('ringan')" class="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold backdrop-blur-md transition-all flex items-center space-x-2">
+                            <span>Coba Relaksasi Harian</span>
+                            <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats & Context Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xl">
+                        <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">16.234 Mahasiswa</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Sivitas akademika dan mahasiswa perantau di 60 institusi pendidikan terdampak langsung di Aceh, Sumut, dan Sumbar.</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xl">
+                        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Beban Ganda Perantau</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Ketakutan akan keselamatan keluarga di kampung halaman berpadu dengan tekanan akademik, finansial, dan kesendirian di kamar kos.</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl">
+                        <i data-lucide="layers" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Pendekatan Stepped-Care</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Intervensi kesehatan mental bertahap: dari regulasi diri (Ringan), dukungan sebaya (Sedang), hingga E-Psychiatry (Parah).</p>
+                </div>
+            </div>
+
+            <!-- Stepped-Care Overview Section -->
+            <div class="glass-card p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-8">
+                <div class="text-center max-w-2xl mx-auto space-y-3">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold">Bagaimana Stepped-Care Bekerja?</h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Terinspirasi dari penanganan klinis modern yang efisien dan ramah mahasiswa perantau dengan kendala finansial.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Level 1 -->
+                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-brand-500 text-white text-xs px-3 py-1 rounded-bl-xl font-bold">Tingkat 1</div>
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold">
+                            <i data-lucide="feather" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-lg">Mindful Escapism</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Dosis 15-30 menit/hari. Pengalihan perhatian sehat, jurnal reflektif digital, pernapasan terpandu, dan aktivitas spiritual penenang sistem saraf.</p>
+                        <button onclick="switchTab('ringan')" class="text-brand-600 dark:text-brand-400 text-sm font-semibold inline-flex items-center space-x-1 hover:underline">
+                            <span>Buka Modul Ringan</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Level 2 -->
+                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs px-3 py-1 rounded-bl-xl font-bold">Tingkat 2</div>
+                        <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center font-bold">
+                            <i data-lucide="users" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-lg">Social Venting & Peer-Buffering</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Dosis 1-2 kali/minggu. Ruang curhat komunitas aman antar perantau didampingi konselor sebaya bersertifikasi Psychological First Aid (PFA).</p>
+                        <button onclick="switchTab('menengah')" class="text-brand-600 dark:text-brand-400 text-sm font-semibold inline-flex items-center space-x-1 hover:underline">
+                            <span>Buka Modul Menengah</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Level 3 -->
+                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-purple-500 text-white text-xs px-3 py-1 rounded-bl-xl font-bold">Tingkat 3</div>
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-600 flex items-center justify-center font-bold">
+                            <i data-lucide="stethoscope" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-lg">E-Psychiatry & Specialized Care</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Dosis 1 sesi/minggu (4-8 minggu). Konsultasi klinis jarak jauh dengan psikolog/psikiater mitra untuk gejala PTSD berat dengan enkripsi data terjamin.</p>
+                        <button onclick="switchTab('parah')" class="text-brand-600 dark:text-brand-400 text-sm font-semibold inline-flex items-center space-x-1 hover:underline">
+                            <span>Buka Modul Parah</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: ASESMEN PSIKOMETRIK & TRIAGING MANDIRI -->
+        <section id="tab-assessment" class="tab-content hidden space-y-8">
+            <div class="max-w-3xl mx-auto glass-card p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-semibold">
+                        <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+                        <span>Specialized Clinical Triaging</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold">Kuesioner Penilaian Mandiri Pascabencana</h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Jawab 5 pertanyaan berikut secara jujur untuk mengetahui tingkat tekanan psikologis yang Anda alami dan rekomendasi dosis intervensi yang tepat.</p>
+                </div>
+
+                <div id="assessment-form" class="space-y-6 pt-4">
+                    <!-- Q1 -->
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+                        <label class="font-semibold text-sm block">1. Seberapa sering Anda mengalami kecemasan mendadak atau ketakutan teringat suara hujan lebat/petir setelah bencana?</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q1" value="1" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Jarang / Tidak Pernah</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q1" value="2" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Sering / Beberapa Kali Seminggu</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q1" value="3" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Setiap Hari / Terus-menerus</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+                        <label class="font-semibold text-sm block">2. Bagaimana kualitas tidur Anda di kamar kos sejak bencana terjadi di kampung halaman?</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q2" value="1" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Tidur Cukup Nyenyak</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q2" value="2" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Sering Terbangun / Susah Tidur</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q2" value="3" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Insomnia Parah / Mimpi Buruk</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+                        <label class="font-semibold text-sm block">3. Apakah Anda kesulitan fokus dalam kuliah atau tugas karena cemas memikirkan kondisi keluarga?</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q3" value="1" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Masih Bisa Fokus</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q3" value="2" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Agak Sulit Berkonsentrasi</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q3" value="3" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Sama Sekali Tidak Bisa Fokus</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+                        <label class="font-semibold text-sm block">4. Seberapa sering Anda merasa kesepian dan terisolasi sendirian di kamar kos?</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q4" value="1" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Jarang Merasa Kesepian</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q4" value="2" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Cukup Sering Merasa Sendirian</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q4" value="3" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Sangat Terisolasi & Putus Asa</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+                        <label class="font-semibold text-sm block">5. Apakah Anda mengalami gejala fisik seperti jantung berdebar, gemetar, atau sesak napas saat teringat bencana?</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q5" value="1" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Tidak Pernah</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q5" value="2" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Kadang-kadang</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-950/30">
+                                <input type="radio" name="q5" value="3" class="text-brand-600 focus:ring-brand-500">
+                                <span class="text-xs">Sering / Mengalami Serangan Panik</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button onclick="calculateAssessment()" class="w-full py-4 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold shadow-lg shadow-brand-500/30 transition-all flex items-center justify-center space-x-2">
+                        <i data-lucide="calculator" class="w-5 h-5"></i>
+                        <span>Hitung Hasil & Rekomendasi Dosis</span>
+                    </button>
+                </div>
+
+                <!-- Result Box (Hidden by default) -->
+                <div id="assessment-result" class="hidden p-6 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div id="result-icon-wrapper" class="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold">
+                            <i data-lucide="check-circle" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Hasil Triaging Anda</span>
+                            <h3 id="result-title" class="text-xl font-bold text-emerald-900 dark:text-emerald-100">Tingkat Ringan</h3>
+                        </div>
+                    </div>
+                    <p id="result-description" class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                        Anda mengalami tekanan psikologis ringan. Sangat disarankan untuk melakukan regulasi mandiri melalui Mindful Escapism selama 15-30 menit setiap hari.
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button id="result-action-btn" onclick="switchTab('ringan')" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold shadow transition-all">
+                            Menuju Modul Level 1
+                        </button>
+                        <button onclick="resetAssessment()" class="px-5 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 text-slate-700 dark:text-slate-300 text-sm font-semibold transition-all">
+                            Ulangi Asesmen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: LEVEL 1 - MINDFUL ESCAPISM -->
+        <section id="tab-ringan" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">Tingkat 1 • Dosis 15-30 Menit/Hari</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold">Mindful Escapism & Regulasi Mandiri</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Tenangkan sistem saraf otonom Anda dari pemicu sensori (suara hujan/petir) melalui pernapasan terpandu dan jurnal reflektif.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Interactive Breathing Timer -->
+                <div class="glass-card p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col items-center text-center space-y-6">
+                    <div class="space-y-1">
+                        <h3 class="text-xl font-bold">Pernapasan Relaksasi (Box Breathing)</h3>
+                        <p class="text-xs text-slate-500">Ikuti lingkaran animasi untuk mengatur kestabilan emosi.</p>
+                    </div>
+
+                    <!-- Breathing Circle Animation -->
+                    <div class="relative w-48 h-48 flex items-center justify-center">
+                        <div id="breath-circle" class="absolute inset-0 rounded-full bg-gradient-to-tr from-brand-500 to-emerald-400 opacity-30 animate-pulse-slow"></div>
+                        <div class="relative z-10 space-y-1">
+                            <span id="breath-status" class="font-extrabold text-lg text-brand-700 dark:text-brand-300">Siap</span>
+                            <p id="breath-countdown" class="text-xs text-slate-500">Tekan Mulai</p>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-3">
+                        <button onclick="startBreathing()" id="breath-btn" class="px-6 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm shadow transition-all">Mulai Latihan</button>
+                        <button onclick="stopBreathing()" class="px-6 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all">Reset</button>
+                    </div>
+                </div>
+
+                <!-- Digital Reflective Journal -->
+                <div class="glass-card p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold">Jurnal Reflektif Digital</h3>
+                            <p class="text-xs text-slate-500">Tuliskan perasaan atau doa Anda hari ini (tersimpan aman di perangkat Anda).</p>
+                        </div>
+                        <i data-lucide="book-open" class="w-6 h-6 text-brand-500"></i>
+                    </div>
+
+                    <textarea id="journal-input" rows="5" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none" placeholder="Tuliskan uneg-uneg, rasa syukur, atau doa ketenangan malam ini..."></textarea>
+                    
+                    <div class="flex justify-between items-center">
+                        <span id="journal-status" class="text-xs text-emerald-600 dark:text-emerald-400 font-medium"></span>
+                        <button onclick="saveJournal()" class="px-6 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold shadow transition-all flex items-center space-x-2">
+                            <i data-lucide="save" class="w-4 h-4"></i>
+                            <span>Simpan Jurnal</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spiritual & Hobby Guide Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold">
+                        <i data-lucide="book" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="font-bold text-lg">Doa & Kitab Suci</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">Membaca ayat suci, berzikir, atau berdoa sesuai keyakinan untuk memperkuat ketahanan batin di perantauan.</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center font-bold">
+                        <i data-lucide="headphones" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="font-bold text-lg">Audio Relaksasi Alam</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">Mendengarkan instrumen suara air mengalir yang menenangkan untuk mereframing trauma sensori hujan deras.</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center font-bold">
+                        <i data-lucide="palette" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="font-bold text-lg">Fokus pada Hobi</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">Melukis, merajut, menulis kreatif, atau memasak menu kesukaan kampung halaman untuk mengalihkan pikiran cemas.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: LEVEL 2 - SOCIAL VENTING & PEER-BUFFERING -->
+        <section id="tab-menengah" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <span class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold">Tingkat 2 • Dosis 1-2 Kali/Minggu</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold">Social Venting & Peer-Buffering</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Ruang curhat aman berbasis komunitas perantau untuk melepaskan emosi negatif dan menerima dukungan empati sebaya.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Anonymous Venting Wall / Chat simulation -->
+                <div class="lg:col-span-2 glass-card p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+                        <div>
+                            <h3 class="text-xl font-bold">Ruang Cerita & Dukungan Sebaya</h3>
+                            <p class="text-xs text-slate-500">Berbagi cerita secara anonim/pseudonim dengan sesama mahasiswa perantau Sumatra.</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-semibold flex items-center space-x-1">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>Konselor Sebaya Online</span>
+                        </span>
+                    </div>
+
+                    <!-- Chat Feed -->
+                    <div id="venting-feed" class="space-y-4 max-h-96 overflow-y-auto pr-2">
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1">
+                            <div class="flex justify-between text-xs text-slate-400">
+                                <span class="font-semibold text-brand-600">AnakKosPadang_02</span>
+                                <span>10 menit lalu</span>
+                            </div>
+                            <p class="text-sm text-slate-700 dark:text-slate-300">Tadi malam waktu hujan deras turun di kos, sempat deg-degan banget ingat rumah di Padang. Tapi coba ngobrol sama teman satu lorong jadi agak tenang. Semangat ya buat kita semua perantau!</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1">
+                            <div class="flex justify-between text-xs text-slate-400">
+                                <span class="font-semibold text-blue-600">PeerConselor_Aceh (SOP PFA)</span>
+                                <span>25 menit lalu</span>
+                            </div>
+                            <p class="text-sm text-slate-700 dark:text-slate-300">Halo rekan-rekan, ingat prinsip PFA (Psychological First Aid): Dengar aktif, terima perasaan mereka tanpa menghakimi, dan pastikan kebutuhan dasarnya terpenuhi.</p>
+                        </div>
+                    </div>
+
+                    <!-- Input message -->
+                    <div class="flex space-x-3 pt-2">
+                        <input id="vent-input" type="text" placeholder="Tulis cerita atau dukungan Anda secara anonim..." class="flex-grow px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        <button onclick="sendVentingMessage()" class="px-6 py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm shadow transition-all flex items-center space-x-1">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            <span>Kirim</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PFA Guidelines for Peer Counselors -->
+                <div class="glass-card p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-6">
+                    <div class="space-y-2">
+                        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 text-xs font-semibold">
+                            <i data-lucide="shield" class="w-4 h-4"></i>
+                            <span>Panduan SOP PFA</span>
+                        </div>
+                        <h3 class="text-xl font-bold">Standar Konselor Sebaya</h3>
+                        <p class="text-xs text-slate-500">Prinsip dasar Psychological First Aid bagi mahasiswa pendamping.</p>
+                    </div>
+
+                    <div class="space-y-4 text-xs text-slate-600 dark:text-slate-400">
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1">
+                            <h5 class="font-bold text-slate-800 dark:text-slate-200">1. Look (Perhatikan)</h5>
+                            <p>Amati tanda-tanda kecemasan ekstrem, serangan panik, atau isolasi diri di lingkungan kos.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1">
+                            <h5 class="font-bold text-slate-800 dark:text-slate-200">2. Listen (Dengarkan)</h5>
+                            <p>Dengarkan cerita dengan penuh empati tanpa memotong atau meremehkan perasaan mereka.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1">
+                            <h5 class="font-bold text-slate-800 dark:text-slate-200">3. Link (Hubungkan)</h5>
+                            <p>Hubungkan mahasiswa dengan bantuan profesional (E-Psychiatry) jika gejala berlanjut lebih dari 2 minggu.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: LEVEL 3 - E-PSYCHIATRY & SPECIALIZED SUPPORT -->
+        <section id="tab-parah" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <span class="px-3 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-semibold">Tingkat 3 • Dosis 1 Sesi/Minggu (4-8 Minggu)</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold">E-Psychiatry & Specialized Clinical Care</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Layanan konsultasi klinis jarak jauh dengan psikolog dan psikiater mitra untuk menangani PTSD kronis pascabencana dengan enkripsi aman.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Booking Consultation Form -->
+                <div class="glass-card p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-6">
+                    <div class="space-y-1">
+                        <h3 class="text-xl font-bold">Jadwalkan Konseling Klinis Profesional</h3>
+                        <p class="text-xs text-slate-500">Kerahasiaan rekam medis psikologis dijamin dengan standar enkripsi tinggi.</p>
+                    </div>
+
+                    <div id="booking-form" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Nama Lengkap / Nama Samaran</label>
+                            <input id="book-name" type="text" placeholder="Contoh: Rahmat Perantau" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Pilih Tenaga Profesional</label>
+                            <select id="book-expert" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                <option>Dr. dr. Sp.KJ (Spesialis Kesehatan Jiwa - Mitra Sumatra)</option>
+                                <option>Psikolog Klinis M.Psi. (Spesialis Trauma Pascabencana)</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Tanggal Konsultasi</label>
+                                <input id="book-date" type="date" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Waktu</label>
+                                <select id="book-time" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <option>10:00 WIB</option>
+                                    <option>14:00 WIB</option>
+                                    <option>19:30 WIB</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="submitBooking()" class="w-full py-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center space-x-2">
+                            <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                            <span>Konfirmasi Jadwal Konsultasi</span>
+                        </button>
+                    </div>
+
+                    <div id="booking-success" class="hidden p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 space-y-2">
+                        <h4 class="font-bold text-purple-900 dark:text-purple-100 flex items-center space-x-2">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-purple-600"></i>
+                            <span>Jadwal Berhasil Dibuat!</span>
+                        </h4>
+                        <p class="text-xs text-purple-700 dark:text-purple-300">Link room E-Psychiatry terenkripsi telah dikirimkan ke dashboard Anda. Tetap tenang, kami siap mendampingi proses pemulihan Anda.</p>
+                    </div>
+                </div>
+
+                <!-- Emergency Contacts & Clinical Triaging Info -->
+                <div class="space-y-6">
+                    <div class="glass-card p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-4">
+                        <div class="flex items-center space-x-3 text-red-600 dark:text-red-400">
+                            <i data-lucide="phone-call" class="w-6 h-6"></i>
+                            <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100">Hotline Darurat Krisis</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-400">Jika Anda atau teman Anda mengalami serangan panik berat atau pikiran membahayakan diri, segera hubungi kontak darurat 24/7 berikut:</p>
+                        
+                        <div class="space-y-3">
+                            <div class="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-bold text-xs text-red-800 dark:text-red-300">Hotline Kesehatan Jiwa Kemenkes</h5>
+                                    <p class="text-xs text-slate-500">Nomor Bebas Pulsa</p>
+                                </div>
+                                <span class="font-extrabold text-red-600 dark:text-red-400 text-sm">119 (Ext. 8)</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-bold text-xs text-purple-800 dark:text-purple-300">Posko Darurat Mahasiswa Perantau</h5>
+                                    <p class="text-xs text-slate-500">Aceh, Sumut, & Sumbar</p>
+                                </div>
+                                <span class="font-extrabold text-purple-600 dark:text-purple-400 text-sm">0812-SUMATRA</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
+                        <h4 class="font-bold text-sm">Keunggulan Specialized Clinical Triaging</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Sistem secara otomatis mengalokasikan sumber daya secara efisien. Kasus ringan tidak ditangani berlebihan, sementara kasus PTSD berat tidak terlewatkan oleh psikiater.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: KISAH & DOKUMENTASI PROGRAM -->
+        <section id="tab-stories" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <span class="px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-semibold">Wawancara & Dokumentasi Nyata</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold">Suara Septia, Nawa, & Manda</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Wawancara mendalam dengan mahasiswa terdampak serta dokumentasi program Sekolah Pesisir & Energi Baik untuk Bumi Lestari.</p>
+            </div>
+
+            <!-- Testimonials / Interviews -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center">S</div>
+                        <div>
+                            <h4 class="font-bold text-base">Septia</h4>
+                            <p class="text-xs text-slate-500">Mahasiswa Perantau Sumatra</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">"Teman-teman satu kos adalah sistem dukungan paling penting saat bencana terjadi dan pascabencana ketika rasa takut muncul kembali. Platform Stepped-Care ini sangat membantu kami mendapat akses profesional tanpa harus merasa cemas sendirian."</p>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center">N</div>
+                        <div>
+                            <h4 class="font-bold text-base">Nawa</h4>
+                            <p class="text-xs text-slate-500">Mahasiswa Perantau Sumatra</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">"Ketidaktahuan tentang kabar keluarga di kampung saat jaringan terputus membuat stres luar biasa di kamar kos. Adanya fitur triaging dan ruang curhat membuat beban mental terasa jauh lebih ringan."</p>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-purple-500 text-white font-bold flex items-center justify-center">M</div>
+                        <div>
+                            <h4 class="font-bold text-base">Manda</h4>
+                            <p class="text-xs text-slate-500">Mahasiswa Perantau Sumatra</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">"Pendekatan bertahap ini sangat masuk akal. Tidak semua orang langsung butuh psikiater, tapi bimbingan dari mindful escapism dan peer-buffering sangat membantu memulihkan fokus belajar kami."</p>
+                </div>
+            </div>
+
+            <!-- Program Documentation -->
+            <div class="glass-card p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center font-bold">
+                        <i data-lucide="award" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">Dokumentasi Program Kolaboratif</h3>
+                        <p class="text-xs text-slate-500">Sekolah Pesisir & Energi Baik untuk Bumi Lestari</p>
+                    </div>
+                </div>
+
+                <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Pengembangan platform Stepped-Care ini diintegrasikan dengan program Sekolah Pesisir dan inisiatif energi baik untuk pemulihan jangka panjang wilayah terdampak banjir dan longsor di Aceh, Sumatera Utara, dan Sumatera Barat. Kolaborasi lintas sektor antara perguruan tinggi, pemerintah, komunitas mahasiswa, dan tenaga profesional memastikan keberlanjutan dan ketahanan psikologis mahasiswa.
+                </p>
+
+                <div class="pt-4 flex justify-end">
+                    <button onclick="copyAppCode()" class="px-6 py-3 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold text-sm shadow hover:opacity-90 transition-all flex items-center space-x-2">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                        <span>Salin Kode Lengkap Aplikasi</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-20 border-t border-slate-200 dark:border-slate-800 py-8 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-400 space-y-4 sm:space-y-0">
+            <p>&copy; 2026 Stepped-Care Solusi Trauma Perantau Pascabencana Sumatra. Seluruh hak cipta dilindungi.</p>
+            <div class="flex space-x-6">
+                <span class="hover:text-brand-600 cursor-pointer" onclick="switchTab('home')">Beranda</span>
+                <span class="hover:text-brand-600 cursor-pointer" onclick="switchTab('assessment')">Asesmen</span>
+                <span class="hover:text-brand-600 cursor-pointer" onclick="switchTab('stories')">Kisah Nyata</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-brand-600', 'bg-brand-50', 'dark:bg-brand-950/50', 'dark:text-brand-400');
+                btn.classList.add('text-slate-600', 'dark:text-slate-300');
+            });
+
+            const activeNav = document.getElementById('nav-' + tabId);
+            if (activeNav) {
+                activeNav.classList.remove('text-slate-600', 'dark:text-slate-300');
+                activeNav.classList.add('text-brand-600', 'bg-brand-50', 'dark:bg-brand-950/50', 'dark:text-brand-400');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            const themeIcon = document.getElementById('theme-icon');
+            themeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+            lucide.createIcons();
+        }
+
+        // Assessment Logic
+        function calculateAssessment() {
+            let totalScore = 0;
+            let answered = true;
+            for (let i = 1; i <= 5; i++) {
+                const radios = document.getElementsByName('q' + i);
+                let selected = false;
+                for (let r of radios) {
+                    if (r.checked) {
+                        totalScore += parseInt(r.value);
+                        selected = true;
+                    }
+                }
+                if (!selected) answered = false;
+            }
+
+            if (!answered) {
+                alert('Mohon jawab semua 5 pertanyaan asesmen terlebih dahulu.');
+                return;
+            }
+
+            const resultDiv = document.getElementById('assessment-result');
+            const titleEl = document.getElementById('result-title');
+            const descEl = document.getElementById('result-description');
+            const actionBtn = document.getElementById('result-action-btn');
+            const iconWrapper = document.getElementById('result-icon-wrapper');
+
+            resultDiv.classList.remove('hidden');
+
+            if (totalScore <= 7) {
+                titleEl.textContent = "Tingkat 1: Gejala Ringan";
+                descEl.textContent = "Anda mengalami tekanan psikologis ringan. Dosis intervensi yang disarankan adalah Mindful Escapism (15-30 menit/hari) melalui pernapasan terpandu dan jurnal reflektif.";
+                actionBtn.textContent = "Menuju Modul Level 1";
+                actionBtn.setAttribute("onclick", "switchTab('ringan')");
+                iconWrapper.className = "w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold";
+            } else if (totalScore <= 12) {
+                titleEl.textContent = "Tingkat 2: Gejala Menengah";
+                descEl.textContent = "Anda mengalami kecemasan dan kesepian sedang. Dosis intervensi yang disarankan adalah Social Venting & Peer-Buffering (1-2 kali seminggu) bersama komunitas perantau.";
+                actionBtn.textContent = "Menuju Modul Level 2";
+                actionBtn.setAttribute("onclick", "switchTab('menengah')");
+                iconWrapper.className = "w-12 h-12 rounded-xl bg-blue-500 text-white flex items-center justify-center font-bold";
+            } else {
+                titleEl.textContent = "Tingkat 3: Gejala Parah / PTSD";
+                descEl.textContent = "Anda menunjukkan indikasi trauma berat atau gejala PTSD kronis. Sangat disarankan segera menggunakan layanan E-Psychiatry dan Specialized Clinical Support setiap minggu.";
+                actionBtn.textContent = "Menuju Modul Level 3";
+                actionBtn.setAttribute("onclick", "switchTab('parah')");
+                iconWrapper.className = "w-12 h-12 rounded-xl bg-purple-500 text-white flex items-center justify-center font-bold";
+            }
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetAssessment() {
+            for (let i = 1; i <= 5; i++) {
+                const radios = document.getElementsByName('q' + i);
+                for (let r of radios) r.checked = false;
+            }
+            document.getElementById('assessment-result').classList.add('hidden');
+        }
+
+        // Breathing Timer Logic
+        let breathInterval = null;
+        function startBreathing() {
+            const statusEl = document.getElementById('breath-status');
+            const countEl = document.getElementById('breath-countdown');
+            const circleEl = document.getElementById('breath-circle');
+            
+            let phase = 0; // 0: Tarik (4s), 1: Tahan (4s), 2: Hembuskan (4s)
+            let count = 4;
+
+            if (breathInterval) clearInterval(breathInterval);
+
+            function updateBreath() {
+                if (count > 0) {
+                    if (phase === 0) {
+                        statusEl.textContent = "Tarik Napas Perlahan...";
+                        circleEl.style.transform = "scale(1.25)";
+                    } else if (phase === 1) {
+                        statusEl.textContent = "Tahan Napas...";
+                        circleEl.style.transform = "scale(1.25)";
+                    } else {
+                        statusEl.textContent = "Hembuskan Perlahan...";
+                        circleEl.style.transform = "scale(1)";
+                    }
+                    countEl.textContent = count + " detik";
+                    count--;
+                } else {
+                    count = 4;
+                    phase = (phase + 1) % 3;
+                }
+            }
+
+            updateBreath();
+            breathInterval = setInterval(updateBreath, 1000);
+        }
+
+        function stopBreathing() {
+            if (breathInterval) clearInterval(breathInterval);
+            document.getElementById('breath-status').textContent = "Siap";
+            document.getElementById('breath-countdown').textContent = "Tekan Mulai";
+            document.getElementById('breath-circle').style.transform = "scale(1)";
+        }
+
+        // Journal LocalStorage Logic
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedJournal = localStorage.getItem('stepped_care_journal');
+            if (savedJournal) {
+                document.getElementById('journal-input').value = savedJournal;
+            }
+        });
+
+        function saveJournal() {
+            const text = document.getElementById('journal-input').value;
+            localStorage.setItem('stepped_care_journal', text);
+            const status = document.getElementById('journal-status');
+            status.textContent = "Berhasil disimpan di perangkat Anda!";
+            setTimeout(() => { status.textContent = ""; }, 3000);
+        }
+
+        // Social Venting Chat Simulation
+        function sendVentingMessage() {
+            const input = document.getElementById('vent-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const feed = document.getElementById('venting-feed');
+            const div = document.createElement('div');
+            div.className = "p-4 rounded-2xl bg-brand-50/50 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-800 space-y-1";
+            div.innerHTML = `
+                <div class="flex justify-between text-xs text-slate-400">
+                    <span class="font-semibold text-brand-600">Anda (Anonim)</span>
+                    <span>Baru saja</span>
+                </div>
+                <p class="text-sm text-slate-700 dark:text-slate-300">${text}</p>
+            `;
+            feed.appendChild(div);
+            input.value = "";
+            feed.scrollTop = feed.scrollHeight;
+        }
+
+        // Booking Consultation
+        function submitBooking() {
+            const name = document.getElementById('book-name').value;
+            if (!name) {
+                alert('Mohon masukkan nama atau nama samaran Anda.');
+                return;
+            }
+            document.getElementById('booking-form').classList.add('hidden');
+            document.getElementById('booking-success').classList.remove('hidden');
+        }
+
+        // Copy Code Function
+        function copyAppCode() {
+            const codeHTML = document.documentElement.outerHTML;
+            const textarea = document.createElement('textarea');
+            textarea.value = codeHTML;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('Kode lengkap aplikasi berhasil disalin ke clipboard!');
+            } catch (err) {
+                alert('Gagal menyalin kode.');
+            }
+            document.body.removeChild(textarea);
+        }
+    </script>
+</body>
+</html>
